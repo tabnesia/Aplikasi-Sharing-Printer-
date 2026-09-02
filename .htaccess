@@ -1,0 +1,13 @@
+# Optional: enables URLs like /local-printer-smlabs/dashboard
+# instead of /local-printer-smlabs/index.php/dashboard.
+# Requires Apache mod_rewrite (enabled by default in XAMPP).
+# If you turn this on, also set $config['index_page'] = ''; in
+# application/config/config.php — otherwise leave both as-is,
+# the app already works without this file.
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php/$1 [L]
+</IfModule>

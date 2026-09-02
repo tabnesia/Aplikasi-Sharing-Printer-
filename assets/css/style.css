@@ -1,0 +1,438 @@
+/* ==========================================================================
+   Local Printer SMLabs — Ink & Paper theme
+   A print-manifest aesthetic: warm paper background, deep ink typography,
+   tabular monospace for job codes and figures, hairline dividers instead
+   of stacked card shadows.
+   ========================================================================== */
+
+:root {
+  --paper: #f5f4ef;
+  --panel: #ffffff;
+  --ink: #1c1e22;
+  --ink-soft: #5b5f6a;
+  --ink-faint: #90939c;
+  --line: #e2e0d6;
+  --line-strong: #cfcdc0;
+
+  --accent: #1f5f5b;      /* deep teal ink — primary */
+  --accent-soft: #e3efee;
+  --accent-ink: #14403d;
+
+  --amber: #a8710f;
+  --amber-soft: #f6ecd8;
+  --blue: #2a5f9e;
+  --blue-soft: #e6eef8;
+  --green: #2f7a4d;
+  --green-soft: #e5f2ea;
+  --red: #b03a4f;
+  --red-soft: #f7e6ea;
+  --gray-soft: #ececea;
+
+  --radius: 6px;
+  --font-sans: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-font-smoothing: antialiased; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------------------------------------------------------------------- */
+/* App shell                                                              */
+/* ---------------------------------------------------------------------- */
+
+.app { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--ink);
+  color: #d7d9dd;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  margin-bottom: 4px;
+}
+
+.brand-mark { flex-shrink: 0; }
+
+.brand-sub {
+  color: #7d818c;
+  font-size: 12px;
+  margin: 0 0 28px 34px;
+}
+
+.sidebar nav { display: flex; flex-direction: column; gap: 2px; }
+
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #b7bac2;
+  text-decoration: none;
+  padding: 9px 10px;
+  border-radius: 4px;
+  border-left: 2px solid transparent;
+  font-size: 13.5px;
+}
+
+.sidebar nav a svg { flex-shrink: 0; opacity: 0.85; }
+
+.sidebar nav a:hover { color: #fff; background: rgba(255, 255, 255, 0.05); }
+
+.sidebar nav a.active {
+  color: #fff;
+  background: rgba(31, 95, 91, 0.35);
+  border-left-color: #4fb3ac;
+}
+
+.sidebar nav a.btn-nav {
+  margin-top: 14px;
+  background: var(--accent);
+  color: #fff;
+  border-left-color: transparent;
+  justify-content: center;
+  font-weight: 500;
+}
+.sidebar nav a.btn-nav:hover { background: #24726d; }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+  color: #6c707a;
+}
+
+.content { flex: 1; padding: 36px 44px; max-width: 1180px; }
+
+/* ---------------------------------------------------------------------- */
+/* Page header                                                            */
+/* ---------------------------------------------------------------------- */
+
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 18px;
+}
+
+.page-head h1 {
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.page-sub { margin: 0; color: var(--ink-soft); font-size: 13px; }
+
+h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 4px; }
+h2 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin: 36px 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+h2:first-of-type { margin-top: 0; }
+
+/* ---------------------------------------------------------------------- */
+/* Alerts                                                                 */
+/* ---------------------------------------------------------------------- */
+
+.alert {
+  padding: 11px 16px;
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  font-size: 13.5px;
+  border-left: 3px solid transparent;
+}
+.alert-success { background: var(--green-soft); color: var(--green); border-color: var(--green); }
+.alert-error { background: var(--red-soft); color: var(--red); border-color: var(--red); }
+
+/* ---------------------------------------------------------------------- */
+/* Manifest strip — the stat summary, styled as a single ledger row       */
+/* rather than four repeated cards                                       */
+/* ---------------------------------------------------------------------- */
+
+.manifest {
+  display: flex;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.manifest-item {
+  flex: 1;
+  padding: 18px 22px;
+  border-right: 1px solid var(--line);
+  position: relative;
+}
+.manifest-item:last-child { border-right: none; }
+
+.manifest-item::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--dot, var(--line-strong));
+}
+.manifest-item.pending { --dot: var(--amber); }
+.manifest-item.printing { --dot: var(--blue); }
+.manifest-item.completed { --dot: var(--green); }
+.manifest-item.failed { --dot: var(--red); }
+
+.manifest-value {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.manifest-label {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  margin-top: 4px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Printer status list                                                    */
+/* ---------------------------------------------------------------------- */
+
+.printer-list {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+}
+
+.printer-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.printer-row:last-child { border-bottom: none; }
+
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--ink-faint);
+}
+.dot.online { background: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
+.dot.offline { background: var(--ink-faint); }
+.dot.busy { background: var(--amber); box-shadow: 0 0 0 3px var(--amber-soft); }
+
+.printer-name { font-weight: 500; }
+.printer-loc { color: var(--ink-soft); font-size: 12.5px; margin-left: 4px; }
+.printer-status { margin-left: auto; font-size: 12.5px; color: var(--ink-soft); }
+
+/* ---------------------------------------------------------------------- */
+/* Table                                                                  */
+/* ---------------------------------------------------------------------- */
+
+.table-wrap {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td {
+  padding: 12px 20px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+}
+.table th {
+  color: var(--ink-soft);
+  font-weight: 500;
+  font-size: 12px;
+  background: #faf9f5;
+}
+.table tbody tr:last-child td { border-bottom: none; }
+.table tbody tr:hover { background: #faf9f5; }
+.table td.mono, .table th.mono { font-family: var(--font-mono); }
+.table a { text-decoration: none; font-weight: 500; }
+.table a:hover { text-decoration: underline; }
+.table td.muted { color: var(--ink-faint); }
+
+/* ---------------------------------------------------------------------- */
+/* Status badge                                                           */
+/* ---------------------------------------------------------------------- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px 3px 7px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.badge::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.badge-pending { background: var(--amber-soft); color: var(--amber); }
+.badge-processing, .badge-printing { background: var(--blue-soft); color: var(--blue); }
+.badge-completed { background: var(--green-soft); color: var(--green); }
+.badge-failed { background: var(--red-soft); color: var(--red); }
+.badge-cancelled { background: var(--gray-soft); color: var(--ink-soft); }
+
+/* ---------------------------------------------------------------------- */
+/* Buttons & forms                                                        */
+/* ---------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent);
+  color: #fff;
+  padding: 9px 16px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 500;
+  font-family: inherit;
+}
+.btn:hover { background: var(--accent-ink); }
+
+.btn-back {
+  display: inline-block;
+  margin-top: 18px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 13px;
+}
+.btn-back:hover { color: var(--accent); }
+
+.filter-bar { display: flex; gap: 10px; margin-bottom: 18px; }
+.filter-bar select {
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: var(--panel);
+  font-size: 13px;
+  color: var(--ink);
+  font-family: inherit;
+}
+
+.form {
+  max-width: 460px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 28px;
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.form input, .form select {
+  padding: 9px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  color: var(--ink);
+  font-family: inherit;
+  background: var(--panel);
+}
+.form input:focus, .form select:focus { border-color: var(--accent); }
+.form-row { display: flex; gap: 16px; }
+.form-row label { flex: 1; }
+
+/* ---------------------------------------------------------------------- */
+/* Detail table                                                           */
+/* ---------------------------------------------------------------------- */
+
+.detail-table {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 620px;
+}
+.detail-table th, .detail-table td {
+  padding: 13px 20px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+}
+.detail-table tr:last-child th, .detail-table tr:last-child td { border-bottom: none; }
+.detail-table th { width: 160px; color: var(--ink-soft); font-weight: 500; }
+.text-error { color: var(--red); }
+
+code {
+  font-family: var(--font-mono);
+  background: var(--gray-soft);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 12.5px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Empty state                                                            */
+/* ---------------------------------------------------------------------- */
+
+.empty-state { padding: 32px 20px; text-align: center; color: var(--ink-faint); font-size: 13px; }
+
+/* ---------------------------------------------------------------------- */
+/* Responsive                                                             */
+/* ---------------------------------------------------------------------- */
+
+@media (max-width: 860px) {
+  .app { flex-direction: column; }
+  .sidebar { width: 100%; flex-direction: row; align-items: center; padding: 14px 20px; }
+  .brand-sub { display: none; }
+  .sidebar nav { flex-direction: row; }
+  .sidebar-footer { display: none; }
+  .content { padding: 24px; }
+  .manifest { flex-wrap: wrap; }
+  .manifest-item { flex: 1 1 50%; border-bottom: 1px solid var(--line); }
+  .form-row { flex-direction: column; }
+}
