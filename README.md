@@ -1,4 +1,4 @@
-# Aplikasi Sharing Printer
+# Aplikasi Sharing Printer V1
 
 Aplikasi Sharing Printer dalam satu jaringan bisa digunakan beberapa PC.
 
