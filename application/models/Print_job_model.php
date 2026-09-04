@@ -10,7 +10,6 @@ class Print_job_model extends CI_Model
         parent::__construct();
     }
 
-    /** Generate a unique job code like PJ-20260831-0001 */
     public function generate_job_code()
     {
         $prefix = 'PJ-' . date('Ymd') . '-';
@@ -63,7 +62,7 @@ class Print_job_model extends CI_Model
         return $this->db->get()->row();
     }
 
-    /** Jobs a given printer should pick up next (used by the print-agent) */
+
     public function get_pending_for_printer($printer_id)
     {
         $this->db->where('printer_id', $printer_id);

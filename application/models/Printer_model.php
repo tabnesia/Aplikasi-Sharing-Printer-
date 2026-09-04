@@ -37,7 +37,7 @@ class Printer_model extends CI_Model
         return $this->db->update($this->table, $data);
     }
 
-    /** Called by the print-agent to mark a printer as alive/online */
+
     public function heartbeat($id, $status = 'online')
     {
         return $this->update($id, [

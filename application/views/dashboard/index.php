@@ -24,12 +24,12 @@
     </div>
 </div>
 
-<!-- ===== Aktivitas Cetak Hari Ini ===== -->
+
 <div class="activity-section">
     <h2>Aktivitas Cetak Hari Ini</h2>
 
     <?php
-    // Siapkan data 0–23 jam agar chart selalu lengkap
+
     $hours = range(0, 23);
     $jobs_map   = [];
     $pages_map  = [];
@@ -81,7 +81,6 @@
             </div>
         </div>
 
-        <!-- Berhasil vs Gagal -->
         <div class="activity-card summary-card">
             <div class="activity-card-header">
                 <span class="activity-title">Berhasil vs Gagal</span>
@@ -111,7 +110,7 @@
 </div>
 
 <style>
-/* ===== Aktivitas Cetak Hari Ini ===== */
+
 .activity-section {
     margin: 28px 0 32px;
 }

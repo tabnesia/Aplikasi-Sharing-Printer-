@@ -1,48 +1,12 @@
 <?php
-/**
- * print-agent/agent.php  — versi USB / printer lokal (Windows)
- * ---------------------------------------------------------------
- * Dijalankan di komputer Windows yang printernya tercolok langsung
- * (USB), bukan printer jaringan. Script ini:
- *   1. Kirim heartbeat ke dashboard tiap beberapa detik (status jadi online)
- *   2. Ambil job pending untuk printer ini
- *   3. Download file, lalu cetak ke printer Windows yang dinamai di bawah
- *   4. Lapor status (printing/completed/failed) balik ke dashboard
- *
- * CARA JALANKAN (Windows, dari Command Prompt):
- *   php print-agent\agent.php
- * Biarkan window-nya tetap terbuka — ini proses yang berjalan terus.
- * (Untuk jalan otomatis saat komputer nyala, bisa dibuatkan Scheduled
- * Task atau file .bat + shortcut di folder Startup.)
- *
- * REKOMENDASI: install SumatraPDF (gratis, portable) supaya print PDF
- * (jenis file paling umum) bisa silent & konsisten:
- * https://www.sumatrapdfreader.org/download-free-pdf-viewer
- * Isi SUMATRA_PATH di bawah ke lokasi SumatraPDF.exe kalau sudah ada.
- *
- * Untuk file Word/Excel/PowerPoint (docx/xlsx/pptx dst), agent akan
- * convert dulu ke PDF pakai LibreOffice headless (tanpa membuka
- * aplikasi apa pun secara visual), baru dicetak lewat SumatraPDF —
- * jauh lebih andal dibanding menyuruh Word/Excel print langsung.
- * Download LibreOffice (gratis) di https://www.libreoffice.org/download/
- * lalu isi LIBREOFFICE_PATH ke lokasi soffice.exe-nya.
- *
- * Kalau SUMATRA_PATH/LIBREOFFICE_PATH tidak diisi, agent akan pakai
- * perintah "print" bawaan Windows lewat aplikasi default untuk tipe
- * file itu (kurang konsisten, dan bisa gagal kalau aplikasinya lambat
- * terbuka atau tidak ada app default untuk tipe file itu).
- * ---------------------------------------------------------------
- */
 
-// ---- Konfigurasi ----------------------------------------------------
 define('APP_BASE_URL', 'http://localhost/local_printer_smlabs/');
-define('PRINTER_ID', 3);                     // sesuai id printer ini di tabel `printers`
-define('WINDOWS_PRINTER_NAME', 'HP Ink Tank 310 series'); // persis seperti di Settings > Printers & scanners
-define('SUMATRA_PATH', 'C:\\Tools\\SumatraPDF\\SumatraPDF.exe');   // sudah dikonfirmasi ada
+define('PRINTER_ID', 3);                   
+define('WINDOWS_PRINTER_NAME', 'HP Ink Tank 310 series'); 
+define('SUMATRA_PATH', 'C:\\Tools\\SumatraPDF\\SumatraPDF.exe');   
 define('LIBREOFFICE_PATH', 'C:\\Program Files\\LibreOffice\\program\\soffice.exe');
 define('POLL_INTERVAL_SECONDS', 5);
 define('DOWNLOAD_DIR', __DIR__ . '/tmp/');
-// ---------------------------------------------------------------------
 
 if (!is_dir(DOWNLOAD_DIR)) {
     mkdir(DOWNLOAD_DIR, 0755, true);
@@ -100,7 +64,7 @@ function log_line($message)
     echo '[' . date('Y-m-d H:i:s') . "] $message\n";
 }
 
-/** Jalankan sebuah perintah PowerShell dan kembalikan output-nya. */
+
 function run_powershell($command)
 {
     $escaped = str_replace('"', '\\"', $command);
@@ -108,16 +72,12 @@ function run_powershell($command)
     return ['output' => implode("\n", $output), 'exit_code' => $exit_code];
 }
 
-/** Cetak lewat SumatraPDF (paling andal, untuk file PDF). */
+
 function print_with_sumatra($file_path, $copies, $paper_size = null, $color_mode = null)
 {
     $settings = [];
 
     if (!empty($paper_size)) {
-        // "shrink" cuma mengecilkan konten kalau memang lebih besar dari
-        // kertas target, dan tetap menghormati margin aman printer —
-        // beda dengan "fit" yang memaksa isi sampai mepet ke tepi kertas
-        // dan bisa kepotong di area yang secara fisik tidak bisa dicetak.
         $settings[] = 'paper=' . $paper_size;
         $settings[] = 'shrink';
     }
@@ -142,12 +102,6 @@ function print_with_sumatra($file_path, $copies, $paper_size = null, $color_mode
     }
 }
 
-/**
- * Convert dokumen Office (docx/xlsx/doc/xls/pptx/ppt) ke PDF pakai
- * LibreOffice headless (tanpa buka aplikasi apa pun secara visual).
- * Hasilnya bisa dicetak lewat SumatraPDF yang jauh lebih andal
- * dibanding menyuruh Word/Excel mencetak langsung.
- */
 function convert_to_pdf($file_path, $output_dir)
 {
     if (LIBREOFFICE_PATH === '' || !file_exists(LIBREOFFICE_PATH)) {
@@ -172,12 +126,6 @@ function convert_to_pdf($file_path, $output_dir)
     return $pdf_path;
 }
 
-/**
- * Cetak lewat aplikasi default Windows untuk tipe file itu (fallback).
- * Dilakukan dengan set printer target ini jadi default sementara,
- * lalu jalankan verb "print" di file (butuh app terkait ter-install:
- * Word untuk docx, Photos untuk jpg/png, dst), lalu kembalikan default.
- */
 function print_with_shell_verb($file_path, $copies)
 {
     $original = run_powershell('(Get-CimInstance -ClassName Win32_Printer -Filter "Default=TRUE").Name')['output'];
@@ -194,7 +142,7 @@ function print_with_shell_verb($file_path, $copies)
             if ($result['exit_code'] !== 0) {
                 throw new RuntimeException('Gagal mencetak file: ' . $result['output']);
             }
-            sleep(3); // beri jeda supaya spooler tidak tabrakan antar salinan
+            sleep(3); 
         }
     } finally {
         if ($original !== '') {
@@ -208,8 +156,6 @@ function send_to_printer($file_path, $copies, $file_type, $paper_size = null, $c
     $file_type = strtolower($file_type);
     $office_types = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
 
-    // Dokumen Office: convert dulu ke PDF lewat LibreOffice (headless,
-    // tanpa buka Word/Excel), baru cetak lewat SumatraPDF.
     if (in_array($file_type, $office_types, true)) {
         $pdf_path = convert_to_pdf($file_path, dirname($file_path));
         try {
@@ -225,14 +171,12 @@ function send_to_printer($file_path, $copies, $file_type, $paper_size = null, $c
         return;
     }
 
-    // PDF: langsung cetak lewat SumatraPDF kalau tersedia.
+  
     if ($file_type === 'pdf' && SUMATRA_PATH !== '' && file_exists(SUMATRA_PATH)) {
         print_with_sumatra($file_path, $copies, $paper_size, $color_mode);
         return;
     }
 
-    // Tipe lain (jpg/png dsb): tetap pakai jalur fallback aplikasi default
-    // (tidak bisa mengatur paper_size/color_mode lewat cara ini).
     print_with_shell_verb($file_path, $copies);
 }
 
